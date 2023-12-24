@@ -6,10 +6,12 @@ using UnityEngine;
 
 public class TowerLevel
 {
+
 	public int level;
 	public int cost;
 	[AssetsOnly] public GameObject body;
 	[AssetsOnly] public GameObject head;
+	
 }
 
 
@@ -24,10 +26,10 @@ public class TowerFeatures : MonoBehaviour
 	[SerializeField] private Transform model;
 	[SerializeField] private List<TowerLevel> levels;
 
-	public GameObject turretBase;
-	public GameObject turretHead;
-
 	private int _currentLevel = 0;
+
+	private GameObject _turretBase;
+	protected GameObject _turretHead;
 
 	private GameManager _gameManager;
 	
@@ -89,9 +91,9 @@ public class TowerFeatures : MonoBehaviour
 			}
 		
 			if (levels[_currentLevel].body)
-				turretBase = Instantiate(levels[_currentLevel].body, model.position, Quaternion.identity, model);
+				_turretBase = Instantiate(levels[_currentLevel].body, model.position, Quaternion.identity, model);
 			if (levels[_currentLevel].head)
-				turretHead = Instantiate(levels[_currentLevel].head, model.position, Quaternion.identity, model);
+				_turretHead = Instantiate(levels[_currentLevel].head, model.position, Quaternion.identity, model);
 		}
 	}
 
