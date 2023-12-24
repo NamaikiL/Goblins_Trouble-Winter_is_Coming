@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -79,10 +78,10 @@ public class TowerFire : TowerFeatures
 	private void Fire()
 	{
 		if (!_targetEnemy) return;
-		if (turretHead)
+		if (_turretHead)
 		{
 			//Vector3 targetDirection = _targetEnemy.position - transform.position;
-			turretHead.transform.LookAt(_targetEnemy);
+			_turretHead.transform.LookAt(_targetEnemy);
 		}
 	}
 
