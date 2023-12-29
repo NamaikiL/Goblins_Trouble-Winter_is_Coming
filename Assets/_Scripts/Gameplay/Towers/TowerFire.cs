@@ -53,6 +53,11 @@ namespace _Scripts.Gameplay.Towers
 
 		#region Properties
 
+		public float TowerDamage => towerFireLevelStats[CurrentLevel].damages;
+		public float TowerFirerate => towerFireLevelStats[CurrentLevel].firerate;
+		public float TowerRange => towerFireLevelStats[CurrentLevel].range;
+		public bool TowerBullet => towerFireLevelStats[CurrentLevel].isFire;
+		
 		protected Transform Target => _targetEnemy;
 
 		#endregion

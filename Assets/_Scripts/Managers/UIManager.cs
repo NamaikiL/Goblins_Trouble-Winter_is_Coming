@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using _Scripts.Gameplay.Towers;
+using _Scripts.Gameplay.Towers.Types;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +17,7 @@ namespace _Scripts.Managers
 		[Header("Player Information Manager")]
 		[SerializeField] private TMP_Text money;
 		[SerializeField] private TMP_Text life;
+		[SerializeField] private GameObject towerCard;
 	
 		[Header("Tower Manager")]
 		[SerializeField] private Transform towerHolder;
@@ -115,6 +118,60 @@ namespace _Scripts.Managers
 		public void UpdateLifeText(int quantity)
 		{
 			life.text = quantity.ToString();
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to show the tower stats on the UI.
+		 * </summary>
+		 * <param name="tower">The actual tower.</param>
+		 * <param name="check">If it needs to be showed or not.</param>
+		 */
+		public void UpdateTowerCard(GameObject tower, bool check)
+		{
+			if(check)
+			{
+				if (!towerCard.activeSelf) towerCard.SetActive(true);
+
+				// TO-DO: Show range of the turret and check if it's the good one selected.
+				// TO-DO: Show Tower Name and image.
+
+				if (tower.GetComponent<TowerFire>())
+				{
+					towerCard.transform.Find("SupportCard").gameObject.SetActive(false);
+
+					GameObject fireCard = towerCard.transform.Find("FireCard").gameObject;
+					fireCard.SetActive(true);
+
+					fireCard.transform.Find("TxtDamage").GetComponent<TMP_Text>().text = 
+						"Damage: " + tower.GetComponent<TowerFire>().TowerDamage;
+					fireCard.transform.Find("TxtFirerate").GetComponent<TMP_Text>().text =
+						"Fire-rate: " + tower.GetComponent<TowerFire>().TowerFirerate;
+					fireCard.transform.Find("TxtRange").GetComponent<TMP_Text>().text =
+						"Range: " + tower.GetComponent<TowerFire>().TowerRange;
+
+					if (tower.GetComponent<TowerFire>().TowerBullet)
+						fireCard.transform.Find("TxtIsFire").GetComponent<TMP_Text>().text = "Bullet: Fire";
+					else
+						fireCard.transform.Find("TxtIsFire").GetComponent<TMP_Text>().text = "Bullet: Normal";
+				}
+
+				if (tower.GetComponent<TowerGoblinGroove>())
+				{
+					towerCard.transform.Find("FireCard").gameObject.SetActive(false);
+
+					GameObject supportCard = towerCard.transform.Find("SupportCard").gameObject;
+					supportCard.SetActive(true);
+
+					supportCard.transform.Find("TxtRange").GetComponent<TMP_Text>().text =
+						"Range: " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
+				}
+			}
+			else
+			{
+				towerCard.SetActive(false);
+			}
 		}
 
 		#endregion

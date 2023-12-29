@@ -34,6 +34,9 @@ namespace _Scripts.Gameplay.Towers.Types
 		#endregion
 
 		#region Properties
+
+		public float TowerRange => towerStats[CurrentLevel].rangeGroove;
+		
 		#endregion
 
 		#region Builtin Methods
