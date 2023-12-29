@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using _Scripts.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -6,7 +8,8 @@ using UnityEngine;
 
 public class TowerLevel
 {
-
+	
+	// Public Variables.
 	public int level;
 	public int cost;
 	[AssetsOnly] public GameObject body;
@@ -14,41 +17,60 @@ public class TowerLevel
 	
 }
 
-
-public class TowerFeatures : MonoBehaviour
+public abstract class TowerFeatures : MonoBehaviour
 {
 
 	#region Variables
 
 	[Header("Tower Features")]
-	[SerializeField] private float cooldown;
-
 	[SerializeField] private Transform model;
-	[SerializeField] private List<TowerLevel> levels;
+	[SerializeField] protected List<TowerLevel> levels;
 
+	// Level Variables.
 	private int _currentLevel = 0;
+	protected int MaxLevel;
 
+	// Towers Parts.
 	private GameObject _turretBase;
-	protected GameObject _turretHead;
+	protected GameObject TurretHead;
+	
+	// Stun Variables.
+	private bool _isStun;
 
+	// Managers.
 	private GameManager _gameManager;
 	
     #endregion
 
     #region Properties
+
+    protected int CurrentLevel => _currentLevel;
+    protected bool IsStun => _isStun;
+    
     #endregion
 
     #region Builtin Methods
 
-    // Start is called before the first frame update.
-    public virtual void Start()
+    /**
+     * <summary>
+     * Start is called before the first frame update.
+     * </summary>
+     */
+    protected virtual void Start()
     {
-	    _gameManager = GameManager.instance;
+	    MaxLevel = levels.Count;
+	    
+	    _gameManager = GameManager.Instance;
         Pose();
     }
 
-    // Update is called once per frame.
-    public virtual void Update()
+    
+    /**
+     * <summary>
+     * Update is called once per frame.
+     * </summary>
+     */
+    protected virtual void Update()
     {
 	    if (Input.GetKeyDown(KeyCode.Space))
 	    {
@@ -60,6 +82,11 @@ public class TowerFeatures : MonoBehaviour
 
 	#region Custom Methods
 
+	/**
+	 * <summary>
+	 * Function that instantiate the tower and remove the money from the player.
+	 * </summary>
+	 */
 	private void Pose()
 	{
 		InstantiateVisual();
@@ -67,23 +94,41 @@ public class TowerFeatures : MonoBehaviour
 	}
 
 
-	private void Upgrade()
+	/**
+	 * <summary>
+	 * Function to upgrade the tower.
+	 * </summary>
+	 */
+	protected virtual void Upgrade()
 	{
-		_currentLevel++;
-		InstantiateVisual();
-		_gameManager.RemoveMoney(levels[_currentLevel].cost);
+		if(_currentLevel < MaxLevel - 1)
+		{
+			_currentLevel++;
+			InstantiateVisual();
+			_gameManager.RemoveMoney(levels[_currentLevel].cost);
+		}
 	}
 
 
+	/**
+	 * <summary>
+	 * Function to sell the tower.
+	 * </summary>
+	 */
 	private void Sell()
 	{
 		
 	}
 
 
+	/**
+	 * <summary>
+	 * Function that instantiate the visual of the tower.
+	 * </summary>
+	 */
 	private void InstantiateVisual()
 	{
-		if(_currentLevel < levels.Count)
+		if(_currentLevel < MaxLevel)
 		{
 			foreach (Transform child in model.transform)
 			{
@@ -93,9 +138,32 @@ public class TowerFeatures : MonoBehaviour
 			if (levels[_currentLevel].body)
 				_turretBase = Instantiate(levels[_currentLevel].body, model.position, Quaternion.identity, model);
 			if (levels[_currentLevel].head)
-				_turretHead = Instantiate(levels[_currentLevel].head, model.position, Quaternion.identity, model);
+				TurretHead = Instantiate(levels[_currentLevel].head, model.position, Quaternion.identity, model);
+			
+			InstantiateChildVisual();
 		}
 	}
+
+
+	/**
+	 * <summary>
+	 * Coroutine to stun the towers.
+	 * </summary>
+	 */
+	public IEnumerator TowerStun()
+	{
+		_isStun = true;
+		yield return new WaitForSeconds(5f);
+		_isStun = false;
+	}
+
+
+	/**
+	 * <summary>
+	 * Function that instantiate the visual of a child.
+	 * </summary>
+	 */
+	protected abstract void InstantiateChildVisual();
 
 	#endregion
 

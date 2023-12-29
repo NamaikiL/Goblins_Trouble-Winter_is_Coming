@@ -1,74 +1,100 @@
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+namespace _Scripts.Controllers
 {
+	public class CameraController : MonoBehaviour
+	{
 
-	#region Variables
+		#region Variables
 
-	// Private Serialized field Variables.
-	[SerializeField] private float _moveSpeed = 0.5f;
-	[SerializeField] private float _screenMargin;
+		[Header("Camera Movements Parameters")]
+		[SerializeField] private float moveSpeed = 0.5f;
+		[SerializeField] private float screenMargin;
 	
-	[SerializeField] private Vector2 levelMarginX;
-	[SerializeField] private Vector2 levelMarginZ;
+		[Header("Camera Clamp Parameters")]
+		[SerializeField] private Vector2 levelMarginX;
+		[SerializeField] private Vector2 levelMarginZ;
 	
-	// Private Variables.
-	private float _horizontal;
-	private float _vertical;
-	private float _screenWidth;
-	private float _screenHeight;
-	private float _horizontalMouse;
-	private float _verticalMouse;
+		// Private Variables.
+		private float _horizontal;
+		private float _vertical;
+		private float _screenWidth;
+		private float _screenHeight;
+		private float _horizontalMouse;
+		private float _verticalMouse;
 	
-	private Vector3 _movement = Vector3.zero;
+		private Vector3 _movement = Vector3.zero;
     
-    #endregion
+		#endregion
 
-    #region Properties
-    #endregion
+		#region Builtin Methods
 
-    #region Builtin Methods
+		/**
+	     * <summary>
+	     * Update is called once per frame.
+	     * </summary>
+	     */
+		void Update()
+		{
+			CameraInputs();
+			MoveCamera();
+			ClampCamera();
+		}
+	
+		#endregion
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+		#region Camera Methods
 
-    // Update is called once per frame
-    void Update()
-    {
-	    _horizontal = Input.GetAxis("Horizontal");
-	    _vertical = Input.GetAxis("Vertical");
+		/**
+		 * <summary>
+		 * Function that take care about camera values.
+		 * </summary>
+		 */
+		private void CameraInputs()
+		{
+			_horizontal = Input.GetAxis("Horizontal");
+			_vertical = Input.GetAxis("Vertical");
 
-	    _screenWidth = Screen.width;
-	    _screenHeight = Screen.height;
+			_screenWidth = Screen.width;
+			_screenHeight = Screen.height;
 
-	    _horizontalMouse = Input.mousePosition.x;
-	    _verticalMouse = Input.mousePosition.y;
+			_horizontalMouse = Input.mousePosition.x;
+			_verticalMouse = Input.mousePosition.y;
 	    
-	    if (_horizontal != 0f || _vertical != 0f)
-	    {
-		    _movement.Set(_horizontal, 0f, _vertical);
-	    }
-	    else
-	    {
-		    #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
-		    if (_horizontalMouse < _screenMargin)
+			if (_horizontal != 0f || _vertical != 0f)
+			{
+				_movement.Set(_horizontal, 0f, _vertical);
+			}
+			else
+			{
+				CameraMouseControls();
+			}
+		}
+
+
+		/**
+		 * <summary>
+		 * Function that control the camera with mouse position.
+		 * </summary>
+		 */
+		private void CameraMouseControls()
+		{
+		#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+		    if (_horizontalMouse < screenMargin)
 		    {
 			    _movement.Set(-1f, 0f, 0f);
 		    }
-		    else if (_horizontalMouse > _screenWidth - _screenMargin)
+		    else if (_horizontalMouse > _screenWidth - screenMargin)
 		    {
 			    _movement.Set(1f, 0f, 0f);
 		    }
 		    else
 		    {
-			    if (_verticalMouse < _screenMargin)
+			    if (_verticalMouse < screenMargin)
 			    {
 				    _movement.Set(0f, 0f, -1f);
 			    }
-			    else if (_verticalMouse > _screenHeight - _screenMargin)
+			    else if (_verticalMouse > _screenHeight - screenMargin)
 			    {
 				    _movement.Set(0f, 0f, 1f);
 			    }
@@ -77,33 +103,53 @@ public class CameraController : MonoBehaviour
 				    _movement.Set(0f,0f,0f);
 			    }
 		    }
-		    #endif
-	    }
-	    
-	    transform.Translate(_movement * _moveSpeed * Time.deltaTime);
-	    
-	    if (transform.position.x < levelMarginX.x)
-	    {
-		    Vector3 newPos = new Vector3(levelMarginX.x, transform.position.y, transform.position.z);
-		    transform.position = newPos;
-	    }
-	    if (transform.position.x > levelMarginX.y)
-	    {
-		    Vector3 newPos = new Vector3(levelMarginX.y, transform.position.y, transform.position.z);
-		    transform.position = newPos;
-	    }
-	    if (transform.position.z < levelMarginZ.x)
-	    {
-		    Vector3 newPos = new Vector3(transform.position.x, transform.position.y, levelMarginZ.x);
-		    transform.position = newPos;
-	    }
-	    if (transform.position.z > levelMarginZ.y)
-	    {
-		    Vector3 newPos = new Vector3(transform.position.x, transform.position.y, levelMarginZ.y);
-		    transform.position = newPos;
-	    }
-    }
-	
-	#endregion
+		#endif
+		}
 
+
+		/**
+		 * <summary>
+		 * Function that move the camera based on values calculated on other function.
+		 * </summary>
+		 */
+		private void MoveCamera()
+		{
+			transform.Translate(_movement * (moveSpeed * Time.deltaTime));
+		}
+
+
+		/**
+		 * <summary>
+		 * Function that Clamp the camera.
+		 * </summary>
+		 */
+		private void ClampCamera()
+		{
+			Transform currentTransform = transform;
+			Vector3 currentPosition = currentTransform.position;
+			Vector3 newPosition = currentPosition;
+
+			if (currentPosition.x < levelMarginX.x)
+			{
+				newPosition.x = levelMarginX.x;
+			}
+			if (currentPosition.x > levelMarginX.y)
+			{
+				newPosition.x = levelMarginX.y;
+			}
+			if (currentPosition.z < levelMarginZ.x)
+			{
+				newPosition.z = levelMarginZ.x;
+			}
+			if (currentPosition.z > levelMarginZ.y)
+			{
+				newPosition.z = levelMarginZ.y;
+			}
+
+			currentTransform.position = newPosition;
+		}
+
+		#endregion
+
+	}
 }

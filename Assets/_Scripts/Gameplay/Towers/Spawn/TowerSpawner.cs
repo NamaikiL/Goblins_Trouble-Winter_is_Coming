@@ -1,45 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TowerSpawner : MonoBehaviour
+namespace _Scripts.Gameplay.Towers.Spawn
 {
-
-	#region Variables
-
-	private bool _isEmpty = true;
-	
-    #endregion
-
-    #region Properties
-
-	public bool IsEmpty => _isEmpty;
-    
-    #endregion
-
-    #region Builtin Methods
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-	
-	#endregion
-
-	#region Custom Methods
-
-	public void FillIt()
+	public class TowerSpawner : MonoBehaviour
 	{
-		_isEmpty = false;
+
+		#region Variables
+
+		// Private Variables.
+		private bool _isEmpty = true;
+	
+		#endregion
+
+		#region Properties
+
+		public bool IsEmpty => _isEmpty;
+    
+		#endregion
+
+		#region Custom Methods
+
+		/**
+	 * <summary>
+	 * Function that make the spawner unusable.
+	 * </summary>
+	 */
+		public void FillIt()
+		{
+			_isEmpty = false;
+		}
+
+		#endregion
+
 	}
-
-	#endregion
-
 }

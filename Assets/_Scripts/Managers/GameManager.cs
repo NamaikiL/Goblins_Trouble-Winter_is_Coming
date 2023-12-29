@@ -1,87 +1,123 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace _Scripts.Managers
 {
+	public class GameManager : MonoBehaviour
+	{
 
-	#region Variables
+		#region Variables
 
-	[SerializeField] private int startMoney = 500;
-	[SerializeField] private int startLife = 20;
+		[Header("Player Gameplay Parameters")]
+		[SerializeField] private int startMoney = 500;
+		[SerializeField] private int startLife = 20;
 
-	private int _currentMoney;
-	private int _currentLife;
+		// Private Variables.
+		private int _currentMoney;
+		private int _currentLife;
 
-	private UIManager _uiManager;
+		private UIManager _uiManager;
 	
-	public static GameManager instance;
+		private static GameManager _instance;
 	
-    #endregion
+		#endregion
 
-    #region Properties
+		#region Properties
 
-    public int CurrentMoney => _currentMoney;
-    public int CurrentLife => _currentLife;
+		public int CurrentMoney => _currentMoney;
+		public int CurrentLife => _currentLife;
+
+		public static GameManager Instance => _instance;
     
-    #endregion
+		#endregion
 
-    #region Builtin Methods
+		#region Builtin Methods
 
-    void Awake()
-    {
-	    if (instance)
-		    Destroy(gameObject);
-	    else
-		    instance = this;
-    }
+		/**
+		 * <summary>
+		 * Awake is called when an enabled script instance is being loaded.
+		 * </summary>
+		 */
+		void Awake()
+		{
+			if (_instance)
+				Destroy(gameObject);
+			else
+				_instance = this;
+		}
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        _uiManager = UIManager.instance;
+    
+		/**
+	     * <summary>
+	     * Start is called before the first frame update.
+	     * </summary>
+	     */
+		void Start()
+		{
+			_uiManager = UIManager.Instance;
 
-        _currentMoney = startMoney;
-        _currentLife = startLife;
+			_currentMoney = startMoney;
+			_currentLife = startLife;
         
-        _uiManager.UpdateMoneyText(startMoney);
-        _uiManager.UpdateLifeText(startLife);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+			_uiManager.UpdateMoneyText(startMoney);
+			_uiManager.UpdateLifeText(startLife);
+		}
 	
-	#endregion
+		#endregion
 
-	#region Custom Methods
+		#region Custom Methods
 
-	void AddMoney(int quantity)
-	{
-		_currentMoney += quantity;
-		_uiManager.UpdateMoneyText(_currentMoney);
-	}
+		/**
+		 * <summary>
+		 * Function to add money for the player.
+		 * </summary>
+		 * <param name="quantity">The quantity to add.</param>
+		 */
+		void AddMoney(int quantity)
+		{
+			_currentMoney += quantity;
+			_uiManager.UpdateMoneyText(_currentMoney);
+		}
 	
-	public void RemoveMoney(int quantity)
-	{
-		_currentMoney -= quantity;
-		_uiManager.UpdateMoneyText(_currentMoney);
-	}
+		
+		/**
+		 * <summary>
+		 * Function to remove money for the player.
+		 * </summary>
+		 * <param name="quantity">The quantity to remove.</param>
+		 */
+		public void RemoveMoney(int quantity)
+		{
+			_currentMoney -= quantity;
+			_uiManager.UpdateMoneyText(_currentMoney);
+		}
 	
-	void AddLife(int quantity)
-	{
-		_currentLife += quantity;
-		_uiManager.UpdateLifeText(_currentLife);
-	}
+		
+		/**
+		 * <summary>
+		 * Function to add life for the player.
+		 * </summary>
+		 * <param name="quantity">The quantity to add.</param>
+		 */
+		void AddLife(int quantity)
+		{
+			_currentLife += quantity;
+			_uiManager.UpdateLifeText(_currentLife);
+		}
 	
-	public void RemoveLife(int quantity)
-	{
-		_currentLife -= quantity;
-		_uiManager.UpdateLifeText(_currentLife);
+		
+		/**
+		 * <summary>
+		 * Function to remove life for the player.
+		 * </summary>
+		 * <param name="quantity">The quantity to remove.</param>
+		 */
+		public void RemoveLife(int quantity)
+		{
+			_currentLife -= quantity;
+			_uiManager.UpdateLifeText(_currentLife);
+		}
+
+		#endregion
+
 	}
-
-	#endregion
-
 }
