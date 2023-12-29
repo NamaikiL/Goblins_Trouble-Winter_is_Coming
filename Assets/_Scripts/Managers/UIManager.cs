@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,8 +28,12 @@ namespace _Scripts.Managers
 		[SerializeField] private GameObject waveTimer;
 
 		[Header("Main Menu")] 
+		[SerializeField] private GameObject menuBase;
 		[SerializeField] private GameObject menuOptions;
 		[SerializeField] private GameObject menuCredits;
+		
+		// Managers Variables.
+		private SceneHandlerManager _sceneHandlerManager;
 		
 		// Instance Variables.
 		private static UIManager _instance;
@@ -54,6 +59,19 @@ namespace _Scripts.Managers
 				Destroy(gameObject);
 			else
 				_instance = this;
+		}
+
+
+		/**
+		 * <summary>
+		 * Start is called on the frame when a script is enabled just before any of the Update methods are called
+		 * the first time.
+		 * </summary>
+		 */
+		void Start()
+		{
+			if (GameObject.Find("SceneManager"))
+				_sceneHandlerManager = GameObject.Find("SceneManager").GetComponent<SceneHandlerManager>();
 		}
 	
 		#endregion
@@ -178,24 +196,73 @@ namespace _Scripts.Managers
 
 		#region Main Menu
 
+		/**
+		 * <summary>
+		 * Function that launch a game.
+		 * </summary>
+		 */
 		public void Play()
 		{
-			// TO-DO: add SceneController Play Scene Function.
+			_sceneHandlerManager.PlayScene();
 		}
 
+		
+		/**
+		 * <summary>
+		 * Function that go to the options menu.
+		 * </summary>
+		 */
 		public void Options()
 		{
-			
+			ChangeMenuPage(menuBase, menuOptions);
 		}
 
+		
+		/**
+		 * <summary>
+		 * Function that go to the credits menu.
+		 * </summary>
+		 */
 		public void Credits()
 		{
-			
+			ChangeMenuPage(menuBase, menuCredits);
 		}
 
+		
+		/**
+		 * <summary>
+		 * Function that quit the game.
+		 * </summary>
+		 */
 		public void Quit()
 		{
+			#if UNITY_EDITOR	// For the editor mode.
+			EditorApplication.ExitPlaymode();
+			#endif
 			
+			Application.Quit();
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to change the visible panel on the menu.
+		 * </summary>
+		 * <param name="panel1">The first panel.</param>
+		 * <param name="panel2">The second panel.</param>
+		 */
+		private void ChangeMenuPage(GameObject panel1, GameObject panel2)
+		{
+			if (panel1.activeSelf)
+			{
+				panel1.SetActive(false);
+				panel2.SetActive(true);
+			}
+			else
+			{
+				panel1.SetActive(true);
+				panel2.SetActive(false);
+			}
 		}
 
 		#endregion
