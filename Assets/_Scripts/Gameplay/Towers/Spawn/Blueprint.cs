@@ -1,3 +1,4 @@
+using _Scripts.Managers;
 using UnityEngine;
 
 namespace _Scripts.Gameplay.Towers.Spawn
@@ -12,11 +13,16 @@ namespace _Scripts.Gameplay.Towers.Spawn
 		[SerializeField] private Material invalid;
 		[SerializeField] private GameObject tower;
 
-		// Private Variables.
+		// Spawn Variables.
 		private bool _valid = false;
-
 		private Transform _spawner;
 		private Renderer[] _renderers;
+		
+		// Tower Information Variables.
+		private TowerFeatures _towerFeatures;
+		
+		// Managers Variables.
+		private GameManager _gameManager;
 	
 		#endregion
 
@@ -30,6 +36,8 @@ namespace _Scripts.Gameplay.Towers.Spawn
 		void Start()
 		{
 			_renderers = GetComponentsInChildren<Renderer>();
+			_towerFeatures = tower.GetComponent<TowerFeatures>();
+			_gameManager = GameManager.Instance;
 		}
 
     
@@ -46,14 +54,15 @@ namespace _Scripts.Gameplay.Towers.Spawn
 			{
 				transform.position = hit.point;
 			}
-
-			if (Input.GetMouseButton(0) && _valid)
+			if (Input.GetMouseButtonDown(0) && _valid && _gameManager.CurrentMoney >= _towerFeatures.Levels[_towerFeatures.CurrentLevel].cost)
 			{
-				Destroy(gameObject);
-				Instantiate(tower, _spawner.position, Quaternion.identity, transform.parent);
+				GameObject towerSpawn = Instantiate(tower, _spawner.position, Quaternion.identity, transform.parent);
+				towerSpawn.name = tower.name;
+				towerSpawn.GetComponent<TowerFeatures>().SpawnerInformation = _spawner;
 				_spawner.GetComponent<TowerSpawner>().FillIt();
+				Destroy(gameObject);
 			}
-			if (Input.GetMouseButton(1))
+			if (Input.GetMouseButtonDown(1))
 			{
 				Destroy(gameObject);
 			}

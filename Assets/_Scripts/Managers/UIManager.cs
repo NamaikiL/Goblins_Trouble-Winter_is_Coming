@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using _Scripts.Gameplay.Towers;
 using _Scripts.Gameplay.Towers.Types;
 using TMPro;
@@ -16,8 +17,23 @@ namespace _Scripts.Managers
 
 		[Header("Player Information Manager")]
 		[SerializeField] private TMP_Text money;
-		[SerializeField] private TMP_Text life;
+		[SerializeField] private Image life;
 		[SerializeField] private GameObject towerCard;
+		[SerializeField] private Animator uiAnimator;
+		
+		[Header("Tower Card Parameters")]
+		[SerializeField] private TMP_Text towerName;
+		[SerializeField] private Image towerImage;
+		[SerializeField] private List<Sprite> towersVisual;
+		[SerializeField] private TMP_Text towerUpgrade;
+		[SerializeField] private TMP_Text towerSell;
+		// Fire Tower
+		[SerializeField] private TMP_Text towerDamage;
+		[SerializeField] private TMP_Text towerFirerate;
+		[SerializeField] private TMP_Text towerRangeFire;
+		[SerializeField] private TMP_Text towerBullet;
+		// Support Tower.
+		[SerializeField] private TMP_Text towerRangeSupport;
 	
 		[Header("Tower Manager")]
 		[SerializeField] private Transform towerHolder;
@@ -29,11 +45,16 @@ namespace _Scripts.Managers
 
 		[Header("Wave Parameters")] 
 		[SerializeField] private GameObject waveTimer;
+		[SerializeField] private TMP_Text txtWaveCounter;
 
 		[Header("Main Menu")] 
 		[SerializeField] private GameObject menuBase;
 		[SerializeField] private GameObject menuOptions;
 		[SerializeField] private GameObject menuCredits;
+		
+		// Tower Card UI Variables.
+		private GameObject _actualTower;
+		private GameObject _selectedRange;
 		
 		// Managers Variables.
 		private SceneHandlerManager _sceneHandlerManager;
@@ -113,11 +134,12 @@ namespace _Scripts.Managers
 		 * <summary>
 		 * Function that update the life on the UI.
 		 * </summary>
-		 * <param name="quantity">The quantity that will be updated.</param>
+		 * <param name="actualLife">The actual life of the player.</param>
+		 * <param name="lifeMax">The max life of the player.</param>
 		 */
-		public void UpdateLifeText(int quantity)
+		public void UpdateLifeUI(int actualLife, int lifeMax)
 		{
-			life.text = quantity.ToString();
+			life.fillAmount = actualLife / lifeMax;
 		}
 
 
@@ -134,8 +156,28 @@ namespace _Scripts.Managers
 			{
 				if (!towerCard.activeSelf) towerCard.SetActive(true);
 
-				// TO-DO: Show range of the turret and check if it's the good one selected.
-				// TO-DO: Show Tower Name and image.
+				// Stock the tower on variables.
+				_actualTower = tower;
+				TowerFeatures towerInformation = tower.GetComponent<TowerFeatures>();
+				
+				// Visual of the range of the tower.
+				if(_selectedRange) _selectedRange.SetActive(false);
+				_selectedRange = tower.transform.Find("Range").gameObject;
+				_selectedRange.SetActive(true);
+				
+				// Name of the tower and its image.
+				towerName.text = tower.name;
+				string imageTowerName = tower.name + "Lvl" + (towerInformation.CurrentLevel + 1);
+				towerImage.sprite = towersVisual.Find(sprite => sprite.name == imageTowerName);
+				
+				// Update the tower upgrade and sell buttons
+				if (towerInformation.CurrentLevel < towerInformation.maxLevel - 1)
+					towerUpgrade.text = "Upgrade\nCost: " +
+					                    towerInformation.Levels[towerInformation.CurrentLevel + 1].cost;
+				else
+					towerUpgrade.text = "Can't Upgrade";	
+				
+				towerSell.text = "Sell\nFor: " + towerInformation.Levels[towerInformation.CurrentLevel].sellPrice;
 
 				if (tower.GetComponent<TowerFire>())
 				{
@@ -144,17 +186,11 @@ namespace _Scripts.Managers
 					GameObject fireCard = towerCard.transform.Find("FireCard").gameObject;
 					fireCard.SetActive(true);
 
-					fireCard.transform.Find("TxtDamage").GetComponent<TMP_Text>().text = 
-						"Damage: " + tower.GetComponent<TowerFire>().TowerDamage;
-					fireCard.transform.Find("TxtFirerate").GetComponent<TMP_Text>().text =
-						"Fire-rate: " + tower.GetComponent<TowerFire>().TowerFirerate;
-					fireCard.transform.Find("TxtRange").GetComponent<TMP_Text>().text =
-						"Range: " + tower.GetComponent<TowerFire>().TowerRange;
+					towerDamage.text = "Damage: " + tower.GetComponent<TowerFire>().TowerDamage;
+					towerFirerate.text = "Fire-rate: " + tower.GetComponent<TowerFire>().TowerFirerate;
+					towerRangeFire.text = "Range: " + tower.GetComponent<TowerFire>().TowerRange;
 
-					if (tower.GetComponent<TowerFire>().TowerBullet)
-						fireCard.transform.Find("TxtIsFire").GetComponent<TMP_Text>().text = "Bullet: Fire";
-					else
-						fireCard.transform.Find("TxtIsFire").GetComponent<TMP_Text>().text = "Bullet: Normal";
+					towerBullet.text = tower.GetComponent<TowerFire>().TowerBullet ? "Bullet: Fire" : "Bullet: Normal";
 				}
 
 				if (tower.GetComponent<TowerGoblinGroove>())
@@ -164,14 +200,64 @@ namespace _Scripts.Managers
 					GameObject supportCard = towerCard.transform.Find("SupportCard").gameObject;
 					supportCard.SetActive(true);
 
-					supportCard.transform.Find("TxtRange").GetComponent<TMP_Text>().text =
-						"Range: " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
+					towerRangeSupport.text = "Range: " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
 				}
 			}
 			else
 			{
+				_actualTower = null;
+				if(_selectedRange) _selectedRange.SetActive(false);
 				towerCard.SetActive(false);
 			}
+		}
+
+
+		/**
+		 * <summary>
+		 * Function for the upgrade button.
+		 * </summary>
+		 */
+		public void UpgradeTower()
+		{
+			if (_actualTower.GetComponent<TowerFire>())
+				_actualTower.GetComponent<TowerFeatures>().Upgrade();
+			if (_actualTower.GetComponent<TowerGoblinGroove>())
+				_actualTower.GetComponent<TowerGoblinGroove>().Upgrade();
+		}
+		
+		
+		/**
+		 * <summary>
+		 * Function for the sell button.
+		 * </summary>
+		 */
+		public void SellTower()
+		{
+			if(_actualTower) _actualTower.GetComponent<TowerFeatures>().Sell();
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to pause the menu.
+		 * </summary>
+		 */
+		public void PauseMenu()
+		{
+			uiAnimator.SetBool($"Pause", true);
+			Time.timeScale = 0;
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to resume the game.
+		 * </summary>
+		 */
+		public void ResumeMenu()
+		{
+			uiAnimator.SetBool($"Pause", false);
+			Time.timeScale = 1;
 		}
 
 		#endregion
@@ -247,6 +333,19 @@ namespace _Scripts.Managers
 				yield return new WaitForSeconds(1f);
 			}
 			waveTimer.SetActive(false);
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to update the wave counter on the screen.
+		 * </summary>
+		 * <param name="actualWave">The actual wave the player is on.</param>
+		 * <param name="maxWave">The max wave on the game.</param>
+		 */
+		public void WaveCounter(int actualWave, int maxWave)
+		{
+			txtWaveCounter.text = (actualWave + 1) + " / " + (maxWave + 1);
 		}
 
 		#endregion

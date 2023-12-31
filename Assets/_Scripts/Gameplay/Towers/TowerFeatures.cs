@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Scripts.Gameplay.Towers.Spawn;
 using _Scripts.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
 
@@ -12,6 +14,7 @@ public class TowerLevel
 	// Public Variables.
 	public int level;
 	public int cost;
+	public int sellPrice;
 	[AssetsOnly] public GameObject body;
 	[AssetsOnly] public GameObject head;
 	
@@ -24,11 +27,11 @@ public abstract class TowerFeatures : MonoBehaviour
 
 	[Header("Tower Features")]
 	[SerializeField] private Transform model;
-	[SerializeField] protected List<TowerLevel> levels;
+	[SerializeField] private List<TowerLevel> levels;
 
 	// Level Variables.
-	private int _currentLevel = 0;
-	protected int MaxLevel;
+	private int _currentLevel = 0; 
+	public int maxLevel;
 
 	// Towers Parts.
 	private GameObject _turretBase;
@@ -37,15 +40,27 @@ public abstract class TowerFeatures : MonoBehaviour
 	// Stun Variables.
 	private bool _isStun;
 
+	// Spawner Information
+	private Transform _spawner;
+	
 	// Managers.
 	private GameManager _gameManager;
+	private UIManager _uiManager;
 	
     #endregion
 
     #region Properties
 
-    protected int CurrentLevel => _currentLevel;
-    protected bool IsStun => _isStun;
+    public int CurrentLevel => _currentLevel;
+    public bool IsStun => _isStun;
+
+    public Transform SpawnerInformation
+    {
+	    get => _spawner;
+	    set => _spawner = value;
+    }
+
+    public List<TowerLevel> Levels => levels;
     
     #endregion
 
@@ -58,9 +73,10 @@ public abstract class TowerFeatures : MonoBehaviour
      */
     protected virtual void Start()
     {
-	    MaxLevel = levels.Count;
-	    
 	    _gameManager = GameManager.Instance;
+	    _uiManager = UIManager.Instance;
+	    maxLevel = levels.Count;
+	    
         Pose();
     }
 
@@ -99,14 +115,18 @@ public abstract class TowerFeatures : MonoBehaviour
 	 * Function to upgrade the tower.
 	 * </summary>
 	 */
-	protected virtual void Upgrade()
+	public virtual void Upgrade()
 	{
-		if(_currentLevel < MaxLevel - 1)
+		if(_currentLevel < maxLevel - 1)
 		{
-			_currentLevel++;
-			InstantiateVisual();
-			_gameManager.RemoveMoney(levels[_currentLevel].cost);
+			if(_gameManager.CurrentMoney >= levels[_currentLevel+1].cost)
+			{
+				_currentLevel++;
+				InstantiateVisual();
+				_gameManager.RemoveMoney(levels[_currentLevel].cost);
+			}
 		}
+		_uiManager.UpdateTowerCard(gameObject, true);
 	}
 
 
@@ -115,9 +135,13 @@ public abstract class TowerFeatures : MonoBehaviour
 	 * Function to sell the tower.
 	 * </summary>
 	 */
-	private void Sell()
+	public void Sell()
 	{
-		
+		_uiManager.UpdateTowerCard(null, false);
+		_spawner.gameObject.SetActive(true);
+		_spawner.GetComponent<TowerSpawner>().FillIt();
+		_gameManager.AddMoney(levels[_currentLevel].sellPrice);
+		Destroy(gameObject);
 	}
 
 
@@ -128,7 +152,7 @@ public abstract class TowerFeatures : MonoBehaviour
 	 */
 	private void InstantiateVisual()
 	{
-		if(_currentLevel < MaxLevel)
+		if(_currentLevel < maxLevel)
 		{
 			foreach (Transform child in model.transform)
 			{

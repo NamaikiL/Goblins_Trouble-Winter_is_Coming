@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,7 +60,7 @@ namespace _Scripts.Gameplay.Towers.Types
 		 */
 		protected override void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.A))
 			{
 				Upgrade();
 			}
@@ -80,9 +81,9 @@ namespace _Scripts.Gameplay.Towers.Types
 
 		#region Custom Methods
 
-		protected override void Upgrade()
+		public override void Upgrade()
 		{
-			if(CurrentLevel < MaxLevel - 1)
+			if(CurrentLevel < maxLevel - 1)
 			{
 				AlliesRemoveBuff();
 				EnemiesRemoveNerf();
@@ -109,19 +110,19 @@ namespace _Scripts.Gameplay.Towers.Types
 		 */
 		private void CheckAlliesAndApplyEffect()
 		{
-			_alliesInRange = Physics.OverlapSphere(transform.position, towerStats[CurrentLevel].rangeGroove + 1f, 1<<8);
+			_alliesInRange = Physics.OverlapSphere(transform.position, towerStats[CurrentLevel].rangeGroove, 1<<8);
 
+			Debug.Log(_alliesInRange.Length);
 			foreach (Collider ally in _alliesInRange)
 			{
-				float distanceEnemy = Vector3.Distance(transform.position, ally.transform.position);
-				if (_alliesInRange.Length != 0 && distanceEnemy <= 5)
+				TowerFire tower = ally.GetComponent<TowerFire>();
+				if (tower)
 				{
-					if(ally.GetComponent<TowerFire>()) 
-						ally.GetComponent<TowerFire>().TowerBuff(
-							towerStats[CurrentLevel].damageMultiplier, 
-							towerStats[CurrentLevel].firerateMultiplier, 
-							towerStats[CurrentLevel].isBulletFireModifier
-							);
+					tower.TowerBuff(
+						towerStats[CurrentLevel].damageMultiplier, 
+						towerStats[CurrentLevel].firerateMultiplier, 
+						towerStats[CurrentLevel].isBulletFireModifier
+						);
 				}
 			}
 		}
@@ -179,16 +180,6 @@ namespace _Scripts.Gameplay.Towers.Types
 		}
 
 		#endregion
-
-#if UNITY_EDITOR
-
-		void OnDrawGizmos()
-		{
-			Gizmos.color = Color.black;
-			Gizmos.DrawWireSphere(transform.position, towerStats[CurrentLevel].rangeGroove);
-		}
-	
-#endif
 		
 	}
 }

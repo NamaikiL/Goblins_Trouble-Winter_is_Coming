@@ -92,17 +92,6 @@ namespace _Scripts.Gameplay.Towers
 		#endregion
 	
 		#region Turret Behavior
-
-		/**
-		 * <summary>
-		 * </summary>
-		 */
-		protected override void Upgrade()
-		{
-			if(CurrentLevel < MaxLevel - 1) TowerUnBuff();
-			base.Upgrade();
-		}
-		
 		
 		/**
 		 * <summary>
@@ -123,7 +112,7 @@ namespace _Scripts.Gameplay.Towers
 		 */
 		private void UpdateShootingPoints()
 		{
-			if (CurrentLevel < MaxLevel)
+			if (CurrentLevel < maxLevel)
 			{
 				Array.Clear(shootingPoints, 0, shootingPoints.Length);
 			
@@ -238,6 +227,7 @@ namespace _Scripts.Gameplay.Towers
 		{
 			if (!_isBuffed)
 			{
+				Debug.Log("Get Buffed");
 				_originalDamage = towerFireLevelStats[CurrentLevel].damages;
 				_originalFirerate = towerFireLevelStats[CurrentLevel].firerate;
 				_originalIsFire = towerFireLevelStats[CurrentLevel].isFire;

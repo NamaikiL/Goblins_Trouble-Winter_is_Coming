@@ -2,6 +2,7 @@ using _Scripts.Gameplay.Towers;
 using _Scripts.Gameplay.Towers.Types;
 using _Scripts.Managers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BoardManager : MonoBehaviour
 {
@@ -59,6 +60,8 @@ public class BoardManager : MonoBehaviour
             
             _uiManager.UpdateTowerCard(_selectedTower, true);
         }
+        
+        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (!Physics.Raycast(ray, out hit, 100f, 1 << 8) 
             && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))

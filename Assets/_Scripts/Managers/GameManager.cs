@@ -24,7 +24,6 @@ namespace _Scripts.Managers
 		#region Properties
 
 		public int CurrentMoney => _currentMoney;
-		public int CurrentLife => _currentLife;
 
 		public static GameManager Instance => _instance;
     
@@ -59,7 +58,7 @@ namespace _Scripts.Managers
 			_currentLife = startLife;
         
 			_uiManager.UpdateMoneyText(startMoney);
-			_uiManager.UpdateLifeText(startLife);
+			_uiManager.UpdateLifeUI(_currentLife, startLife);
 		}
 	
 		#endregion
@@ -72,7 +71,7 @@ namespace _Scripts.Managers
 		 * </summary>
 		 * <param name="quantity">The quantity to add.</param>
 		 */
-		void AddMoney(int quantity)
+		public void AddMoney(int quantity)
 		{
 			_currentMoney += quantity;
 			_uiManager.UpdateMoneyText(_currentMoney);
@@ -90,31 +89,29 @@ namespace _Scripts.Managers
 			_currentMoney -= quantity;
 			_uiManager.UpdateMoneyText(_currentMoney);
 		}
-	
-		
+
 		/**
 		 * <summary>
-		 * Function to add life for the player.
+		 * Function to remove life to the player.
 		 * </summary>
-		 * <param name="quantity">The quantity to add.</param>
+		 * <param name="quantity">The actual life to remove.</param>
 		 */
-		void AddLife(int quantity)
+		public void RemovePlayerLife(int quantity)
 		{
-			_currentLife += quantity;
-			_uiManager.UpdateLifeText(_currentLife);
+			_currentLife = Mathf.Clamp(_currentLife - quantity, 0, startLife);
+			UpdateLifePlayer(_currentLife);
 		}
-	
+		
 		
 		/**
 		 * <summary>
-		 * Function to remove life for the player.
+		 * Function to update the life of the player.
 		 * </summary>
-		 * <param name="quantity">The quantity to remove.</param>
+		 * <param name="actualLife">The actual life of the player.</param>
 		 */
-		public void RemoveLife(int quantity)
+		public void UpdateLifePlayer(int actualLife)
 		{
-			_currentLife -= quantity;
-			_uiManager.UpdateLifeText(_currentLife);
+			_uiManager.UpdateLifeUI(actualLife, startLife);
 		}
 
 		#endregion

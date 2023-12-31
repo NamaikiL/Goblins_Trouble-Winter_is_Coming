@@ -246,10 +246,11 @@ public class Enemy : MonoBehaviour
 	{
 		float randomNbEnemies = Random.Range(minNbEnemies, maxNbEnemies);
 		string enemyName = _waveManager.EnemiesList[Random.Range(0, _waveManager.EnemiesList.Count - 1)].EnemyName;
-
+		Transform krampereTransform = transform;
+		
 		for (int i = 0; i < randomNbEnemies; i++)
 		{
-			_waveManager.SpawnEnemy(enemyName, transform.position + transform.forward * 0.5f);
+			_waveManager.SpawnEnemy(enemyName, krampereTransform.position + krampereTransform.forward * 0.5f);
 			yield return new WaitForSeconds(1f);
 		}
 		

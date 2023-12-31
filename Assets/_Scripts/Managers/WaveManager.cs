@@ -18,16 +18,16 @@ public class Behavior
 {
 	public BehaviorTypes type;
 
-	private bool showMultAndDiff => type == BehaviorTypes.Multiple || type == BehaviorTypes.MultipleDifferent;
-	private bool hideWaitAndDiff => type == BehaviorTypes.Wait || type == BehaviorTypes.MultipleDifferent;
+	private bool ShowMultAndDiff => type == BehaviorTypes.Multiple || type == BehaviorTypes.MultipleDifferent;
+	private bool HideWaitAndDiff => type == BehaviorTypes.Wait || type == BehaviorTypes.MultipleDifferent;
 	
 	// Single and Multiple type.
-	[HideIf(nameof(hideWaitAndDiff))] public string enemyType;
+	[HideIf(nameof(HideWaitAndDiff))] public string enemyType;
 
 	// Multiple and Multiple different type.
 	[ShowIf("type", BehaviorTypes.MultipleDifferent)] public List<string> enemiesType;
-	[ShowIf(nameof(showMultAndDiff))] public int enemyNumber;
-	[ShowIf(nameof(showMultAndDiff))] public float timeBetweenEnemies;
+	[ShowIf(nameof(ShowMultAndDiff))] public int enemyNumber;
+	[ShowIf(nameof(ShowMultAndDiff))] public float timeBetweenEnemies;
 	
 	// Wait type.
 	[ShowIf("type", BehaviorTypes.Wait)]public float time;
@@ -136,9 +136,11 @@ public class WaveManager : MonoBehaviour
 	 */
 	IEnumerator StartBehaviorSchema()
 	{
-		foreach (Wave wave in waves)
+		for (int i = 0; i <= waves.Count; i++)
 		{
-			foreach (Behavior behavior in wave.behaviors)
+			_uiManager.WaveCounter(i, waves.Count);
+			
+			foreach (Behavior behavior in waves[i].behaviors)
 			{
 				switch (behavior.type) 
 				{ 
@@ -170,10 +172,10 @@ public class WaveManager : MonoBehaviour
 				yield return null;
 			}
 
-			if (waves.Last() != wave)
+			if (waves.Last() != waves[i])
 			{
 				_uiManager.WaveTimerUI(timeBetweenWaves);
-				yield return new WaitForSeconds(timeBetweenWaves + 2f);		// Adding two seconds to let the time for the timer ui to desactivate.
+				yield return new WaitForSeconds(timeBetweenWaves + 2f);		// Adding two seconds to let the time for the timer ui to dis-activate.
 			}
 		}
 	}

@@ -7,7 +7,7 @@ namespace _Scripts.Gameplay.Towers.Spawn
 
 		#region Variables
 
-		// Private Variables.
+		// Lock Variables.
 		private bool _isEmpty = true;
 	
 		#endregion
@@ -27,7 +27,7 @@ namespace _Scripts.Gameplay.Towers.Spawn
 	 */
 		public void FillIt()
 		{
-			_isEmpty = false;
+			_isEmpty = !_isEmpty;
 		}
 
 		#endregion
