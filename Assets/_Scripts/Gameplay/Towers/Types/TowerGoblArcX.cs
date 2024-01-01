@@ -1,4 +1,5 @@
 using System.Collections;
+using _Scripts.Gameplay.Enemies;
 using UnityEngine;
 
 namespace _Scripts.Gameplay.Towers.Types
@@ -33,9 +34,8 @@ namespace _Scripts.Gameplay.Towers.Types
          * Update is called once per frame.
          * </summary>
          */
-        protected override void Update()
+        void Update()
         {
-            base.Update();
             if(!IsStun) Fire();
         }
 	

@@ -1,3 +1,4 @@
+using _Scripts.Gameplay.Enemies;
 using UnityEngine;
 
 namespace _Scripts.Gameplay.Towers
@@ -12,7 +13,7 @@ namespace _Scripts.Gameplay.Towers
     
         #region Variables
 
-        // Private Variables.
+        // Bullet Stats Variables.
         private float _damage;
         private float _rangeOfDamage;
         private bool _isBulletFire;

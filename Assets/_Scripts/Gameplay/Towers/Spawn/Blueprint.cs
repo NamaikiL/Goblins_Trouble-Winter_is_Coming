@@ -14,7 +14,7 @@ namespace _Scripts.Gameplay.Towers.Spawn
 		[SerializeField] private GameObject tower;
 
 		// Spawn Variables.
-		private bool _valid = false;
+		private bool _valid;
 		private Transform _spawner;
 		private Renderer[] _renderers;
 		
@@ -54,7 +54,10 @@ namespace _Scripts.Gameplay.Towers.Spawn
 			{
 				transform.position = hit.point;
 			}
-			if (Input.GetMouseButtonDown(0) && _valid && _gameManager.CurrentMoney >= _towerFeatures.Levels[_towerFeatures.CurrentLevel].cost)
+			// If it's valid and player have enough money.
+			if (Input.GetMouseButtonDown(0) 
+			    && _valid 
+			    && _gameManager.CurrentMoney >= _towerFeatures.Levels[_towerFeatures.CurrentLevel].cost)
 			{
 				GameObject towerSpawn = Instantiate(tower, _spawner.position, Quaternion.identity, transform.parent);
 				towerSpawn.name = tower.name;
@@ -77,6 +80,7 @@ namespace _Scripts.Gameplay.Towers.Spawn
 	     */
 		private void OnTriggerEnter(Collider other)
 		{
+			// If it's not a GoblArcX, act normally.
 			if (other.GetComponent<TowerSpawner>() && other.GetComponent<TowerSpawner>().IsEmpty && !CompareTag("GoblArcX"))
 			{
 				_valid = true;
@@ -84,6 +88,7 @@ namespace _Scripts.Gameplay.Towers.Spawn
 				ChangeMat();
 			}
 			
+			// If it's a GoblArcX, need to be in a high ground.
 			if (other.GetComponent<TowerSpawner>() && other.GetComponent<TowerSpawner>().IsEmpty && CompareTag("GoblArcX") && other.CompareTag("High"))
 			{
 				_valid = true;

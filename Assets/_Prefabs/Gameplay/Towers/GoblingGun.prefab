@@ -199,6 +199,7 @@ MonoBehaviour:
     sellPrice: 0
     body: {fileID: 7578230737570386951, guid: af266df258377ef4c885a5741d3741ef, type: 3}
     head: {fileID: 693432104600018468, guid: 7fd869b8a9ddf2840b993b5ef5bdaaf5, type: 3}
+  maxLevel: 0
   fireType: 0
   rangeVisual: {fileID: 7543492520157270826}
   shootingPoints: []
@@ -209,10 +210,10 @@ MonoBehaviour:
     isFire: 0
     bullet: {fileID: 6013876256722764912, guid: bd44689a65e9139439ba4d5a8e0c17ba,
       type: 3}
-  - damages: 1.5
+  - damages: 1000
     firerate: 1.5
     range: 7
-    isFire: 0
+    isFire: 1
     bullet: {fileID: 6013876256722764912, guid: bd44689a65e9139439ba4d5a8e0c17ba,
       type: 3}
   - damages: 2

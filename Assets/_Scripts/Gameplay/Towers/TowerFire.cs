@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Scripts.Gameplay.Enemies;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,7 +15,7 @@ namespace _Scripts.Gameplay.Towers
 		Weakest
 	}
 	
-	[System.Serializable]
+	[Serializable]
 	public class TowerLevelStats
 	{
 		public float damages;
@@ -48,6 +49,9 @@ namespace _Scripts.Gameplay.Towers
 		// Enemies variables.
 		private Transform _targetEnemy;
 		private Collider[] _enemiesInRange;
+		
+		// Enum Types Index.
+		private int _currentEnum;
 	
 		#endregion
 
@@ -59,6 +63,8 @@ namespace _Scripts.Gameplay.Towers
 		public bool TowerBullet => towerFireLevelStats[CurrentLevel].isFire;
 		
 		protected Transform Target => _targetEnemy;
+
+		public FireType TypeFire => fireType;
 
 		#endregion
 	
@@ -73,20 +79,6 @@ namespace _Scripts.Gameplay.Towers
 		{ 
 			base.Start(); 
 			StartCoroutine(Detection());
-		}
-
-	
-		/**
-		 * <summary>
-		 * Update is called once per frame.
-		 * </summary>
-		 */
-		protected override void Update()
-		{ 
-			if (Input.GetKeyDown(KeyCode.Space))
-			{
-				Upgrade();
-			}
 		}
 
 		#endregion
@@ -145,7 +137,7 @@ namespace _Scripts.Gameplay.Towers
 		
 		/**
 		 * <summary>
-		 * Function that detect the enemies in the turret range.
+		 * Function that detect the enemies in the turret range and by it's type.
 		 * </summary>
 		 */
 		private IEnumerator Detection() 
@@ -160,7 +152,6 @@ namespace _Scripts.Gameplay.Towers
 		
 			foreach (Collider enemy in _enemiesInRange)
 			{
-				
 				if (enemy && enemy.GetComponent<NavMeshAgent>()) 
 				{ 
 					_currentDistance = enemy.GetComponent<Enemy>().GetPathRemainingDistance();
@@ -209,6 +200,21 @@ namespace _Scripts.Gameplay.Towers
 			_shortestDistance = 0f;
 
 			StartCoroutine(Detection());
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to change the Target.
+		 * </summary>
+		 */
+		public void ChangeFireType()
+		{
+			_currentEnum++;
+
+			if (_currentEnum >= Enum.GetValues(typeof(FireType)).Length) _currentEnum = 0;
+
+			fireType = (FireType)_currentEnum;
 		}
 
 		#endregion

@@ -21,13 +21,14 @@ namespace _Scripts.Gameplay.Towers.Spawn
 		#region Custom Methods
 
 		/**
-	 * <summary>
-	 * Function that make the spawner unusable.
-	 * </summary>
-	 */
+		 * <summary>
+		 * Function that make the spawner unusable.
+		 * </summary>
+		 */
 		public void FillIt()
 		{
 			_isEmpty = !_isEmpty;
+			gameObject.SetActive(_isEmpty);
 		}
 
 		#endregion

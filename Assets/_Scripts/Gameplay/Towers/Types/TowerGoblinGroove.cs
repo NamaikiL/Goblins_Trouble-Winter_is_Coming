@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using _Scripts.Gameplay.Enemies;
 using UnityEngine;
 
 namespace _Scripts.Gameplay.Towers.Types
@@ -28,7 +28,7 @@ namespace _Scripts.Gameplay.Towers.Types
 		[SerializeField] private Transform rangeVisual;
 		[SerializeField] private List<GoblinGrooveStats> towerStats;
 
-		// Private Variables.
+		// Buff Objects Variables.
 		private Collider[] _alliesInRange;
 		private Collider[] _enemiesInRange;
 	
@@ -57,14 +57,9 @@ namespace _Scripts.Gameplay.Towers.Types
 		 * <summary>
 		 * Update is called once per frame.
 		 * </summary>
-		 */
-		protected override void Update()
+		 */ 
+		void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.A))
-			{
-				Upgrade();
-			}
-			
 			if(!IsStun)
 			{
 				CheckAlliesAndApplyEffect();

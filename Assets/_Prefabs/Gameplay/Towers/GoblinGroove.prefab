@@ -186,16 +186,20 @@ MonoBehaviour:
   levels:
   - level: 1
     cost: 0
+    sellPrice: 0
     body: {fileID: 6257841117933367810, guid: 98044bc60f83f87438ca21e361415ad0, type: 3}
     head: {fileID: 0}
   - level: 2
     cost: 0
+    sellPrice: 0
     body: {fileID: 3524976039167198331, guid: 80d817b572fc6ca40b3db20cb0af041e, type: 3}
     head: {fileID: 0}
   - level: 3
     cost: 0
+    sellPrice: 0
     body: {fileID: 9032805160131770040, guid: a88e121edf12ff84d8f9e48ab360f9f3, type: 3}
     head: {fileID: 0}
+  maxLevel: 0
   rangeVisual: {fileID: 7543492520157270826}
   towerStats:
   - rangeGroove: 5

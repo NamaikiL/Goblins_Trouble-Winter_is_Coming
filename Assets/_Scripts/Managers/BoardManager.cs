@@ -1,75 +1,78 @@
-using _Scripts.Gameplay.Towers;
-using _Scripts.Gameplay.Towers.Types;
-using _Scripts.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BoardManager : MonoBehaviour
+namespace _Scripts.Managers
 {
-
-    #region Variables
-
-    // Tower selection Variables.
-    private GameObject _selectedTower;
-    
-    // Managers Variables.
-    private UIManager _uiManager;
-    
-    #endregion
-
-    #region Builtin Methods
-    
-    /**
-     * <summary>
-     * Start is called before the first frame update.
-     * </summary>
-     */
-    void Start()
+    public class BoardManager : MonoBehaviour
     {
-        _uiManager = UIManager.Instance;
-    }
 
+        #region Variables
+
+        // Tower selection Variables.
+        private GameObject _selectedTower;
     
-    /**
-     * <summary>
-     * Update is called once per frame.
-     * </summary>
-     */
-    void Update()
-    {
-        CheckTower();
-    }
+        // Managers Variables.
+        private UIManager _uiManager;
     
-    #endregion
+        #endregion
 
-    #region Custom Methods
-
-    /**
-     * <summary>
-     * Function that check when a player click on a specific tower and show its stats.
-     * </summary>
-     */
-    private void CheckTower()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit, 100f, 1 << 8))
+        #region Builtin Methods
+    
+        /**
+         * <summary>
+         * Start is called before the first frame update.
+         * </summary>
+         */
+        void Start()
         {
-            _selectedTower = hit.collider.gameObject;
+            _uiManager = UIManager.Instance;
+        }
+
+    
+        /**
+         * <summary>
+         * Update is called once per frame.
+         * </summary>
+         */
+        void Update()
+        {
+            CheckTower();
+        }
+    
+        #endregion
+
+        #region Custom Methods
+
+        /**
+         * <summary>
+         * Function that check when a player click on a specific tower and show its stats.
+         * </summary>
+         */
+        private void CheckTower()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            // Show the card when clicking a tower.
+            if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit, 100f, 1 << 8))
+            {
+                _selectedTower = hit.collider.gameObject;   // Stock the tower.
             
-            _uiManager.UpdateTowerCard(_selectedTower, true);
-        }
+                _uiManager.UpdateTowerCard(_selectedTower, true);
+            }
         
-        if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject()) return;
+            // If the player click on the UI, do nothing.
+            else if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject()) return;
 
-        if (!Physics.Raycast(ray, out hit, 100f, 1 << 8) 
-            && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
-        {
-            _uiManager.UpdateTowerCard(null, false);
+            // If the player click on nothing, dis-activate the card.
+            else if (!Physics.Raycast(ray, out hit, 100f, 1 << 8) 
+                && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
+            {
+                _uiManager.UpdateTowerCard(null, false);
+            }
         }
-    }
     
-    #endregion
+        #endregion
 
+    }
 }

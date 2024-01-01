@@ -11,12 +11,14 @@ namespace _Scripts.Managers
 		[SerializeField] private int startMoney = 500;
 		[SerializeField] private int startLife = 20;
 
-		// Private Variables.
+		// Player stats Variables.
 		private int _currentMoney;
 		private int _currentLife;
 
+		// Managers Variables.
 		private UIManager _uiManager;
 	
+		// Instance Variables.
 		private static GameManager _instance;
 	
 		#endregion
@@ -38,10 +40,8 @@ namespace _Scripts.Managers
 		 */
 		void Awake()
 		{
-			if (_instance)
-				Destroy(gameObject);
-			else
-				_instance = this;
+			if (_instance) Destroy(this);
+			_instance = this;
 		}
     
     
@@ -54,11 +54,14 @@ namespace _Scripts.Managers
 		{
 			_uiManager = UIManager.Instance;
 
-			_currentMoney = startMoney;
-			_currentLife = startLife;
-        
-			_uiManager.UpdateMoneyText(startMoney);
-			_uiManager.UpdateLifeUI(_currentLife, startLife);
+			if(_uiManager)
+			{
+				_currentMoney = startMoney;
+				_currentLife = startLife;
+
+				_uiManager.UpdateMoneyText(startMoney);
+				_uiManager.UpdateLifeUI(_currentLife, startLife);
+			}
 		}
 	
 		#endregion
@@ -86,7 +89,7 @@ namespace _Scripts.Managers
 		 */
 		public void RemoveMoney(int quantity)
 		{
-			_currentMoney -= quantity;
+			_currentMoney = Mathf.Clamp(_currentMoney - quantity, 0, 99999);
 			_uiManager.UpdateMoneyText(_currentMoney);
 		}
 
@@ -109,7 +112,7 @@ namespace _Scripts.Managers
 		 * </summary>
 		 * <param name="actualLife">The actual life of the player.</param>
 		 */
-		public void UpdateLifePlayer(int actualLife)
+		private void UpdateLifePlayer(int actualLife)
 		{
 			_uiManager.UpdateLifeUI(actualLife, startLife);
 		}

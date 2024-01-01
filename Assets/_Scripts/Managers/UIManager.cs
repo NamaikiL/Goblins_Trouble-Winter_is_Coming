@@ -27,6 +27,7 @@ namespace _Scripts.Managers
 		[SerializeField] private List<Sprite> towersVisual;
 		[SerializeField] private TMP_Text towerUpgrade;
 		[SerializeField] private TMP_Text towerSell;
+		[SerializeField] private TMP_Text towerType;
 		// Fire Tower
 		[SerializeField] private TMP_Text towerDamage;
 		[SerializeField] private TMP_Text towerFirerate;
@@ -79,10 +80,8 @@ namespace _Scripts.Managers
 		 */
 		void Awake()
 		{
-			if (_instance)
-				Destroy(gameObject);
-			else
-				_instance = this;
+			if (_instance) Destroy(this);
+			_instance = this;
 		}
 
 
@@ -94,6 +93,7 @@ namespace _Scripts.Managers
 		 */
 		void Start()
 		{
+			// If there's a Scene Manager.
 			if (GameObject.Find("SceneManager"))
 				_sceneHandlerManager = GameObject.Find("SceneManager").GetComponent<SceneHandlerManager>();
 		}
@@ -110,8 +110,10 @@ namespace _Scripts.Managers
 		 */
 		public void TowerInstantiate(GameObject tower)
 		{
+			// If there's no Blueprint
 			if (!GameObject.Find("Blueprint"))
 			{
+				// Instantiate the blueprint with a specific name.
 				GameObject blueprint = Instantiate(tower, Vector3.zero, Quaternion.identity, towerHolder);
 				blueprint.name = "Blueprint";
 			}
@@ -152,8 +154,10 @@ namespace _Scripts.Managers
 		 */
 		public void UpdateTowerCard(GameObject tower, bool check)
 		{
+			// If the player is on a tower or click on a tower.
 			if(check)
 			{
+				// If already active, then do nothing.
 				if (!towerCard.activeSelf) towerCard.SetActive(true);
 
 				// Stock the tower on variables.
@@ -170,7 +174,7 @@ namespace _Scripts.Managers
 				string imageTowerName = tower.name + "Lvl" + (towerInformation.CurrentLevel + 1);
 				towerImage.sprite = towersVisual.Find(sprite => sprite.name == imageTowerName);
 				
-				// Update the tower upgrade and sell buttons
+				// Update the tower upgrade and sell buttons.
 				if (towerInformation.CurrentLevel < towerInformation.maxLevel - 1)
 					towerUpgrade.text = "Upgrade\nCost: " +
 					                    towerInformation.Levels[towerInformation.CurrentLevel + 1].cost;
@@ -179,13 +183,19 @@ namespace _Scripts.Managers
 				
 				towerSell.text = "Sell\nFor: " + towerInformation.Levels[towerInformation.CurrentLevel].sellPrice;
 
+				// For Fire Tower type.
 				if (tower.GetComponent<TowerFire>())
 				{
+					// Dis-activate the card for the support.
 					towerCard.transform.Find("SupportCard").gameObject.SetActive(false);
 
 					GameObject fireCard = towerCard.transform.Find("FireCard").gameObject;
 					fireCard.SetActive(true);
 
+					// Fire Type.
+					towerType.text = tower.GetComponent<TowerFire>().TypeFire.ToString();
+					
+					// Tower Stats.
 					towerDamage.text = "Damage: " + tower.GetComponent<TowerFire>().TowerDamage;
 					towerFirerate.text = "Fire-rate: " + tower.GetComponent<TowerFire>().TowerFirerate;
 					towerRangeFire.text = "Range: " + tower.GetComponent<TowerFire>().TowerRange;
@@ -193,18 +203,22 @@ namespace _Scripts.Managers
 					towerBullet.text = tower.GetComponent<TowerFire>().TowerBullet ? "Bullet: Fire" : "Bullet: Normal";
 				}
 
+				// For Support Tower type.
 				if (tower.GetComponent<TowerGoblinGroove>())
 				{
+					// Dis-activate the card for the fire tower.
 					towerCard.transform.Find("FireCard").gameObject.SetActive(false);
 
 					GameObject supportCard = towerCard.transform.Find("SupportCard").gameObject;
 					supportCard.SetActive(true);
 
+					// Tower Stats.
 					towerRangeSupport.text = "Range: " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
 				}
 			}
 			else
 			{
+				// Remove everything important on the card.
 				_actualTower = null;
 				if(_selectedRange) _selectedRange.SetActive(false);
 				towerCard.SetActive(false);
@@ -239,6 +253,18 @@ namespace _Scripts.Managers
 
 		/**
 		 * <summary>
+		 * Function to change the type of the tower.
+		 * </summary>
+		 */
+		public void ChangeType()
+		{
+			_actualTower.GetComponent<TowerFire>().ChangeFireType();
+			towerType.text = _actualTower.GetComponent<TowerFire>().TypeFire.ToString();
+		}
+
+
+		/**
+		 * <summary>
 		 * Function to pause the menu.
 		 * </summary>
 		 */
@@ -258,6 +284,17 @@ namespace _Scripts.Managers
 		{
 			uiAnimator.SetBool($"Pause", false);
 			Time.timeScale = 1;
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to play the menu scene.
+		 * </summary>
+		 */
+		public void ReturnToMenu()
+		{
+			_sceneHandlerManager.MenuScene();
 		}
 
 		#endregion

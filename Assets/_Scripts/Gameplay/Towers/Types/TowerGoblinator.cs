@@ -1,4 +1,5 @@
 using System.Collections;
+using _Scripts.Gameplay.Enemies;
 using UnityEngine;
 
 namespace _Scripts.Gameplay.Towers.Types
@@ -34,10 +35,9 @@ namespace _Scripts.Gameplay.Towers.Types
          * <summary>
          * Update is called once per frame.
          * </summary>
-         */
-        protected override void Update()
+         */ 
+        void Update()
         {
-            base.Update();
             if(!IsStun) Fire();
         }
 	
@@ -92,7 +92,6 @@ namespace _Scripts.Gameplay.Towers.Types
         {
             foreach(GameObject shootingPoint in shootingPoints)
             {
-                Quaternion shootingPointRotation = shootingPoint.transform.rotation;
                 Vector3 turretHeadRotation = TurretHead.transform.rotation.eulerAngles;
                 
                 GameObject bulletSpawn = Instantiate(
