@@ -50,7 +50,10 @@ namespace _Scripts.Managers
 
 		#region Properties
 
-		public string EnemyName { get; private set ; }
+		public string EnemyName
+		{
+			get => name;
+		}
 		
 		#endregion
 	}
@@ -202,24 +205,24 @@ namespace _Scripts.Managers
 
 	
 		/**
-	 * <summary>
-	 * Function to spawn the enemies.
-	 * </summary>
-	 * <param name="enemyType">The enemy to spawn.</param>
-	 * <param name="posSpawn">The place of spawn.</param>
-	 */
+		 * <summary>
+		 * Function to spawn the enemies.
+		 * </summary>
+		 * <param name="enemyType">The enemy to spawn.</param>
+		 * <param name="posSpawn">The place of spawn.</param>
+		 */
 		public void SpawnEnemy(string enemyType, Vector3 posSpawn)
 		{
-		
 			// Stock the Prefab of the enemy to spawn.
 			GameObject enemyToInstantiate = 
 				enemiesList.Where(obj => obj.EnemyName == enemyType).SingleOrDefault() != null
-					? enemiesList.Where(obj => obj.EnemyName == enemyType).SingleOrDefault().enemyPrefab
-					: null;
-		
+				? enemiesList.Where(obj => obj.EnemyName == enemyType).SingleOrDefault().enemyPrefab
+				: null;
+			
 			// If there's an enemy.
 			if (enemyToInstantiate)
 			{
+				Debug.Log("Instantiate");
 				// Instantiate it.
 				GameObject enemy = Instantiate(
 					enemyToInstantiate, 
