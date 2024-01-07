@@ -226,7 +226,7 @@ namespace _Scripts.Managers
 					supportCard.SetActive(true);
 
 					// Tower Stats.
-					towerRangeSupport.text = "RANGE " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
+					towerRangeSupport.text = "RANGE               " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
 				}
 			}
 			else
