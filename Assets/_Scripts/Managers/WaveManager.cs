@@ -80,6 +80,9 @@ namespace _Scripts.Managers
 		[SerializeField] private float timeBetweenWaves;
 		[SerializeField] private int moneyPerWave;
 
+		[Header("Audio")] 
+		[SerializeField] private AudioSource goldWave;
+
 		// Waves Variables.
 		private int _enemyCount;
 	
@@ -197,6 +200,7 @@ namespace _Scripts.Managers
 				{
 					_uiManager.WaveTimerUI(timeBetweenWaves);
 					yield return new WaitForSeconds(timeBetweenWaves + 2f);		// Adding two seconds to let the time for the timer ui to dis-activate.
+					goldWave.Play();
 					moneyPerWave *= (int)1.15;
 					_gameManager.AddMoney(moneyPerWave);
 				}

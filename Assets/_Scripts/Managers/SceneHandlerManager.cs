@@ -14,18 +14,29 @@ namespace _Scripts.Managers
          */
         public void PlayScene()
         {
-            SceneManager.LoadScene("Game", LoadSceneMode.Single);
+            SceneManager.LoadScene($"Game", LoadSceneMode.Single);
         }
 
 
         /**
          * <summary>
-         * Function that launch the manu scene.
+         * Function that launch the Menu scene.
          * </summary>
          */
         public void MenuScene()
         {
-            SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+            SceneManager.LoadScene($"Menu", LoadSceneMode.Single);
+        }
+
+
+        /**
+         * <summary>
+         * Function that launch the End scene.
+         * </summary>
+         */
+        public void EndScene()
+        {
+            SceneManager.LoadScene($"EndScene", LoadSceneMode.Single);
         }
 
         #endregion

@@ -42,6 +42,7 @@ namespace _Scripts.Gameplay.Enemies
 		// Managers.
 		private UIManager _uiManager;
 		private WaveManager _waveManager;
+		private GameManager _gameManager;
     
 		#endregion
 
@@ -68,6 +69,7 @@ namespace _Scripts.Gameplay.Enemies
 		{
 			_uiManager = UIManager.Instance;
 			_waveManager = WaveManager.Instance;
+			_gameManager = GameManager.Instance;
 	    
 			_originalMoveSpeed = moveSpeed;
 	    
@@ -130,7 +132,8 @@ namespace _Scripts.Gameplay.Enemies
 					if (life <= 0)
 					{
 						_uiManager.UpdateBossUI(false);
-						Destroy(gameObject);
+						_gameManager.HasWin = true;
+						_uiManager.ChargeEndScene();
 					}
 				}
 			}

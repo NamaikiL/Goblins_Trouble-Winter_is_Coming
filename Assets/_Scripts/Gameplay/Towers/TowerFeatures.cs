@@ -29,6 +29,9 @@ namespace _Scripts.Gameplay.Towers
 		[Header("Tower Features")]
 		[SerializeField] private Transform model;
 		[SerializeField] private List<TowerLevel> levels;
+		
+		[Header("Audio")]
+		[SerializeField] private AudioSource upgradeSell;
 
 		// Level Variables.
 		private int _currentLevel; 
@@ -106,6 +109,7 @@ namespace _Scripts.Gameplay.Towers
 			{
 				if(_gameManager.CurrentMoney >= levels[_currentLevel+1].cost)
 				{
+					upgradeSell.Play();
 					_currentLevel++;
 					InstantiateVisual();
 					_gameManager.RemoveMoney(levels[_currentLevel].cost);
@@ -122,10 +126,11 @@ namespace _Scripts.Gameplay.Towers
 		 */
 		public void Sell()
 		{
+			upgradeSell.Play();
 			_uiManager.UpdateTowerCard(null, false);
 			_spawner.GetComponent<TowerSpawner>().FillIt();
 			_gameManager.AddMoney(levels[_currentLevel].sellPrice);
-			Destroy(gameObject);
+			Destroy(gameObject, upgradeSell.clip.length);
 		}
 
 

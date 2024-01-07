@@ -8,6 +8,9 @@ namespace _Scripts.Managers
 
         #region Variables
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource button2;
+        
         // Tower selection Variables.
         private GameObject _selectedTower;
     
@@ -56,6 +59,7 @@ namespace _Scripts.Managers
             // Show the card when clicking a tower.
             if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit, 100f, 1 << 8))
             {
+                button2.Play();
                 _selectedTower = hit.collider.gameObject;   // Stock the tower.
             
                 _uiManager.UpdateTowerCard(_selectedTower, true);

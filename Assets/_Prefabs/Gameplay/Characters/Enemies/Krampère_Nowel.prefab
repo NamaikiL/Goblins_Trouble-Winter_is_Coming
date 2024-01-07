@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 1000
-  shield: 100
+  shield: 200
   moveSpeed: 0.25
   needFire: 1
   minSecondsStun: 20

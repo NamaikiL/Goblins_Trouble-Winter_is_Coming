@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Scripts.Managers
 {
@@ -15,6 +16,9 @@ namespace _Scripts.Managers
 		private int _currentMoney;
 		private int _currentLife;
 
+		// EndScene Variable.
+		private static bool _hasWin;
+		
 		// Managers Variables.
 		private UIManager _uiManager;
 	
@@ -26,6 +30,11 @@ namespace _Scripts.Managers
 		#region Properties
 
 		public int CurrentMoney => _currentMoney;
+		public bool HasWin
+		{
+			get => _hasWin;
+			set => _hasWin = value;
+		}
 
 		public static GameManager Instance => _instance;
     
@@ -54,7 +63,7 @@ namespace _Scripts.Managers
 		{
 			_uiManager = UIManager.Instance;
 
-			if(_uiManager)
+			if(SceneManager.GetActiveScene().name == "Game")
 			{
 				_currentMoney = startMoney;
 				_currentLife = startLife;
@@ -102,7 +111,10 @@ namespace _Scripts.Managers
 		public void RemovePlayerLife(int quantity)
 		{
 			_currentLife = Mathf.Clamp(_currentLife - quantity, 0, startLife);
-			UpdateLifePlayer(_currentLife);
+			if (_currentLife > 0)
+				UpdateLifePlayer(_currentLife);
+			else
+				_uiManager.ChargeEndScene();
 		}
 		
 		

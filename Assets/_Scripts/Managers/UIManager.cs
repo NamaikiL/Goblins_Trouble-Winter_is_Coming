@@ -52,6 +52,13 @@ namespace _Scripts.Managers
 		[Header("Main Menu")] 
 		[SerializeField] private GameObject menuBase;
 		[SerializeField] private GameObject menuCredits;
+
+		[Header("End Scene")] 
+		[SerializeField] private TMP_Text txtEnd;
+
+		[Header("Audio")] 
+		[SerializeField] private AudioSource button;
+		[SerializeField] private AudioSource button2;
 		
 		// Tower Card UI Variables.
 		private GameObject _actualTower;
@@ -59,6 +66,7 @@ namespace _Scripts.Managers
 		
 		// Managers Variables.
 		private SceneHandlerManager _sceneHandlerManager;
+		private GameManager _gameManager;
 		
 		// Instance Variables.
 		private static UIManager _instance;
@@ -96,6 +104,11 @@ namespace _Scripts.Managers
 			// If there's a Scene Manager.
 			if (GameObject.Find("SceneManager"))
 				_sceneHandlerManager = GameObject.Find("SceneManager").GetComponent<SceneHandlerManager>();
+			
+			if(GameManager.Instance) _gameManager = GameManager.Instance;
+			
+			if (SceneManager.GetActiveScene().name == "EndScene") EndSceneHandle();
+				
 		}
 
 
@@ -126,6 +139,7 @@ namespace _Scripts.Managers
 			// If there's no Blueprint
 			if (!GameObject.Find("Blueprint"))
 			{
+				button2.Play();
 				// Instantiate the blueprint with a specific name.
 				GameObject blueprint = Instantiate(tower, Vector3.zero, Quaternion.identity, towerHolder);
 				blueprint.name = "Blueprint";
@@ -283,8 +297,9 @@ namespace _Scripts.Managers
 		 */
 		public void PauseMenu()
 		{
+			button.Play();
 			uiAnimator.SetBool($"Pause", true);
-			Time.timeScale = 0;
+			Time.timeScale = 0f;
 		}
 
 
@@ -295,8 +310,9 @@ namespace _Scripts.Managers
 		 */
 		public void ResumeMenu()
 		{
+			button.Play();
 			uiAnimator.SetBool($"Pause", false);
-			Time.timeScale = 1;
+			Time.timeScale = 1f;
 		}
 
 
@@ -307,7 +323,9 @@ namespace _Scripts.Managers
 		 */
 		public void ReturnToMenu()
 		{
-			_sceneHandlerManager.MenuScene();
+			button.Play();
+			Time.timeScale = 1f;
+			_sceneHandlerManager.Invoke($"MenuScene", button.clip.length);
 		}
 
 		#endregion
@@ -409,7 +427,9 @@ namespace _Scripts.Managers
 		 */
 		public void Play()
 		{
-			_sceneHandlerManager.PlayScene();
+			button.Play();
+			Time.timeScale = 1f;
+			_sceneHandlerManager.Invoke($"PlayScene", button.clip.length);
 		}
 
 		
@@ -420,6 +440,7 @@ namespace _Scripts.Managers
 		 */
 		public void Credits()
 		{
+			button.Play();
 			ChangeMenuPage(menuBase, menuCredits);
 		}
 
@@ -431,17 +452,33 @@ namespace _Scripts.Managers
 		 */
 		private void ButtonMenu()
 		{
+			button.Play();
 			if (menuCredits.activeSelf) ChangeMenuPage(menuCredits, menuBase);
 		}
 
+
+		/**
+		 * <summary>
+		 * Function to call the coroutine to quit the game.
+		 * </summary>
+		 */
+		public void QuitUI()
+		{
+			StartCoroutine(Quit());
+		}
+		
 		
 		/**
 		 * <summary>
-		 * Function that quit the game.
+		 * Coroutine that quit the game.
 		 * </summary>
 		 */
-		public void Quit()
+		private IEnumerator Quit()
 		{
+			button.Play();
+
+			yield return new WaitForSeconds(button.clip.length);
+			
 			#if UNITY_EDITOR	// For the editor mode.
 			EditorApplication.ExitPlaymode();
 			#endif
@@ -469,6 +506,32 @@ namespace _Scripts.Managers
 				panel1.SetActive(true);
 				panel2.SetActive(false);
 			}
+		}
+
+		#endregion
+
+		#region EndGame
+
+
+		/**
+		 * <summary>
+		 * Function to charge the end scene.
+		 * </summary>
+		 */
+		public void ChargeEndScene()
+		{
+			_sceneHandlerManager.EndScene();
+		}
+		
+		
+		/**
+		 * <summary>
+		 * Function to handle the text at the end scene.
+		 * </summary>
+		 */
+		private void EndSceneHandle()
+		{
+			txtEnd.text = _gameManager.HasWin ? "THE GOBLINS CAMP HAVE WIN" : "THE GOBLINS CAMP HAVE LOST";
 		}
 
 		#endregion

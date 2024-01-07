@@ -12,6 +12,10 @@ namespace _Scripts.Gameplay.Towers.Spawn
 		[SerializeField] private Material valid;
 		[SerializeField] private Material invalid;
 		[SerializeField] private GameObject tower;
+		
+		[Header("Audio")]
+		[SerializeField] private AudioSource button2;
+		[SerializeField] private AudioSource upgradeSell;
 
 		// Spawn Variables.
 		private bool _valid;
@@ -59,11 +63,13 @@ namespace _Scripts.Gameplay.Towers.Spawn
 			    && _valid 
 			    && _gameManager.CurrentMoney >= _towerFeatures.Levels[_towerFeatures.CurrentLevel].cost)
 			{
+				button2.Play();
+				upgradeSell.Play();
 				GameObject towerSpawn = Instantiate(tower, _spawner.position, Quaternion.identity, transform.parent);
 				towerSpawn.name = tower.name;
 				towerSpawn.GetComponent<TowerFeatures>().SpawnerInformation = _spawner;
 				_spawner.GetComponent<TowerSpawner>().FillIt();
-				Destroy(gameObject);
+				Destroy(gameObject, upgradeSell.clip.length);
 			}
 			if (Input.GetMouseButtonDown(1))
 			{

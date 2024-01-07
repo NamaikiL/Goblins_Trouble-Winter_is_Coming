@@ -13,6 +13,10 @@ namespace _Scripts.Gameplay.Towers.Types
         [SerializeField] private float timeBetweenShoot;
         [SerializeField] private float fireForce;
         
+        [Header("Audio")]
+        [SerializeField] private AudioSource goblinYell;
+        [SerializeField] private AudioSource towerFire;
+        
         // Shooting variables.
         private IEnumerator shooting;
 
@@ -78,6 +82,9 @@ namespace _Scripts.Gameplay.Towers.Types
         {
             foreach (GameObject shootingPoint in shootingPoints)
             {
+                towerFire.Play();
+                goblinYell.Play();
+                
                 // Instantiate the bullet.
                 GameObject bulletSpawn = Instantiate(
                     towerFireLevelStats[CurrentLevel].bullet, 

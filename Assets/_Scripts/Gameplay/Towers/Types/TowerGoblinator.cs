@@ -13,6 +13,10 @@ namespace _Scripts.Gameplay.Towers.Types
         [SerializeField] [Range(0f, 90f)] private float angle;
         [SerializeField] private float firePower;
         
+        [Header("Audio")]
+        [SerializeField] private AudioSource goblinYell;
+        [SerializeField] private AudioSource towerFire;
+        
         // Private variables.
         private IEnumerator shooting;
 
@@ -92,6 +96,9 @@ namespace _Scripts.Gameplay.Towers.Types
         {
             foreach(GameObject shootingPoint in shootingPoints)
             {
+                towerFire.Play();
+                goblinYell.Play();
+                
                 Vector3 turretHeadRotation = TurretHead.transform.rotation.eulerAngles;
                 
                 GameObject bulletSpawn = Instantiate(
