@@ -6,6 +6,7 @@ using _Scripts.Gameplay.Towers.Types;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace _Scripts.Managers
@@ -50,7 +51,6 @@ namespace _Scripts.Managers
 
 		[Header("Main Menu")] 
 		[SerializeField] private GameObject menuBase;
-		[SerializeField] private GameObject menuOptions;
 		[SerializeField] private GameObject menuCredits;
 		
 		// Tower Card UI Variables.
@@ -97,7 +97,20 @@ namespace _Scripts.Managers
 			if (GameObject.Find("SceneManager"))
 				_sceneHandlerManager = GameObject.Find("SceneManager").GetComponent<SceneHandlerManager>();
 		}
-	
+
+
+		/**
+		 * <summary>
+		 * Update is called once per frame.
+		 * </summary>
+		 */
+		void Update()
+		{
+			if (SceneManager.GetActiveScene().name == "Menu")
+				if (Input.GetKeyDown(KeyCode.Escape))
+					ButtonMenu();
+		}
+
 		#endregion
 
 		#region Gameplay Player
@@ -170,18 +183,18 @@ namespace _Scripts.Managers
 				_selectedRange.SetActive(true);
 				
 				// Name of the tower and its image.
-				towerName.text = tower.name;
+				towerName.text = tower.name.ToUpper();
 				string imageTowerName = tower.name + "Lvl" + (towerInformation.CurrentLevel + 1);
 				towerImage.sprite = towersVisual.Find(sprite => sprite.name == imageTowerName);
 				
 				// Update the tower upgrade and sell buttons.
 				if (towerInformation.CurrentLevel < towerInformation.maxLevel - 1)
-					towerUpgrade.text = "Upgrade\nCost: " +
+					towerUpgrade.text = "UPGRADE\nCOST " +
 					                    towerInformation.Levels[towerInformation.CurrentLevel + 1].cost;
 				else
-					towerUpgrade.text = "Can't Upgrade";	
+					towerUpgrade.text = "CAN'T UPGRADE";	
 				
-				towerSell.text = "Sell\nFor: " + towerInformation.Levels[towerInformation.CurrentLevel].sellPrice;
+				towerSell.text = "SELL\nFOR " + towerInformation.Levels[towerInformation.CurrentLevel].sellPrice;
 
 				// For Fire Tower type.
 				if (tower.GetComponent<TowerFire>())
@@ -193,14 +206,14 @@ namespace _Scripts.Managers
 					fireCard.SetActive(true);
 
 					// Fire Type.
-					towerType.text = tower.GetComponent<TowerFire>().TypeFire.ToString();
+					towerType.text = tower.GetComponent<TowerFire>().TypeFire.ToString().ToUpper();
 					
 					// Tower Stats.
-					towerDamage.text = "Damage: " + tower.GetComponent<TowerFire>().TowerDamage;
-					towerFirerate.text = "Fire-rate: " + tower.GetComponent<TowerFire>().TowerFirerate;
-					towerRangeFire.text = "Range: " + tower.GetComponent<TowerFire>().TowerRange;
+					towerDamage.text = "DAMAGE           " + tower.GetComponent<TowerFire>().TowerDamage;
+					towerFirerate.text = "FIRE-RATE     " + tower.GetComponent<TowerFire>().TowerFirerate;
+					towerRangeFire.text = "RANGE               " + tower.GetComponent<TowerFire>().TowerRange;
 
-					towerBullet.text = tower.GetComponent<TowerFire>().TowerBullet ? "Bullet: Fire" : "Bullet: Normal";
+					towerBullet.text = tower.GetComponent<TowerFire>().TowerBullet ? "BULLET FIRE" : "BULLET NORMAL";
 				}
 
 				// For Support Tower type.
@@ -213,7 +226,7 @@ namespace _Scripts.Managers
 					supportCard.SetActive(true);
 
 					// Tower Stats.
-					towerRangeSupport.text = "Range: " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
+					towerRangeSupport.text = "RANGE " + tower.GetComponent<TowerGoblinGroove>().TowerRange;
 				}
 			}
 			else
@@ -259,7 +272,7 @@ namespace _Scripts.Managers
 		public void ChangeType()
 		{
 			_actualTower.GetComponent<TowerFire>().ChangeFireType();
-			towerType.text = _actualTower.GetComponent<TowerFire>().TypeFire.ToString();
+			towerType.text = _actualTower.GetComponent<TowerFire>().TypeFire.ToString().ToUpper();
 		}
 
 
@@ -402,23 +415,23 @@ namespace _Scripts.Managers
 		
 		/**
 		 * <summary>
-		 * Function that go to the options menu.
-		 * </summary>
-		 */
-		public void Options()
-		{
-			ChangeMenuPage(menuBase, menuOptions);
-		}
-
-		
-		/**
-		 * <summary>
 		 * Function that go to the credits menu.
 		 * </summary>
 		 */
 		public void Credits()
 		{
 			ChangeMenuPage(menuBase, menuCredits);
+		}
+
+
+		/**
+		 * <summary>
+		 * Function to change menu page by button.
+		 * </summary>
+		 */
+		private void ButtonMenu()
+		{
+			if (menuCredits.activeSelf) ChangeMenuPage(menuCredits, menuBase);
 		}
 
 		

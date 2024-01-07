@@ -222,7 +222,6 @@ namespace _Scripts.Managers
 			// If there's an enemy.
 			if (enemyToInstantiate)
 			{
-				Debug.Log("Instantiate");
 				// Instantiate it.
 				GameObject enemy = Instantiate(
 					enemyToInstantiate, 
