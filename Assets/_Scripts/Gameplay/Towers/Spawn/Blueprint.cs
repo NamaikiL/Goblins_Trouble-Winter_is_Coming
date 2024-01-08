@@ -65,6 +65,13 @@ namespace _Scripts.Gameplay.Towers.Spawn
 			{
 				button2.Play();
 				upgradeSell.Play();
+				_valid = false;
+
+				foreach (Renderer rendererBlueprint in GetComponentsInChildren<Renderer>())
+				{
+					rendererBlueprint.enabled = false;
+				}
+				
 				GameObject towerSpawn = Instantiate(tower, _spawner.position, Quaternion.identity, transform.parent);
 				towerSpawn.name = tower.name;
 				towerSpawn.GetComponent<TowerFeatures>().SpawnerInformation = _spawner;

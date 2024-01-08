@@ -85,6 +85,7 @@ namespace _Scripts.Managers
 
 		// Waves Variables.
 		private int _enemyCount;
+		private int _currentMoneyPerWave;
 	
 		// Managers Variables.
 		private UIManager _uiManager;
@@ -127,6 +128,7 @@ namespace _Scripts.Managers
 			Time.timeScale = 1f;
 			_uiManager = UIManager.Instance;
 			_gameManager = GameManager.Instance;
+			_currentMoneyPerWave = moneyPerWave;
 	    
 			StartWaves();
 		}
@@ -201,8 +203,8 @@ namespace _Scripts.Managers
 					_uiManager.WaveTimerUI(timeBetweenWaves);
 					yield return new WaitForSeconds(timeBetweenWaves + 2f);		// Adding two seconds to let the time for the timer ui to dis-activate.
 					goldWave.Play();
-					moneyPerWave *= (int)1.15;
-					_gameManager.AddMoney(moneyPerWave);
+					_currentMoneyPerWave *= (int)1.15;
+					_gameManager.AddMoney(_currentMoneyPerWave);
 				}
 			}
 		}
