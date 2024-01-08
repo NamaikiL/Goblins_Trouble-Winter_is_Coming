@@ -44,7 +44,7 @@ SIMONET Paul: Tower Designer/Texturing
 
 DAULIAC Rayan: Character Designer/Sculpt/Texturing/UI
 
-MELONI Léo: Level Designer/Texturing
+MELONI Léo: Level Designer/Texturing/Unity Integration
 
 # Assets Used:
 
